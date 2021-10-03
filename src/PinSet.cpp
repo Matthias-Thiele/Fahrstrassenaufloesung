@@ -15,7 +15,7 @@ PinSet::PinSet(uint8_t numberOfPins, uint8_t pinNumberList[]) {
   m_nextSend = 0;
 
   for (uint8_t i = 0; i < numberOfPins; i++) {
-    m_pins[i].init(pinNumberList[i]);
+    m_pins[i].init(pinNumberList[i], 50l);
   }
 }
 

@@ -87,10 +87,10 @@ void stateSetup() {
   pinMode(A0, INPUT);
 
   // Eingänge für die vier Trigger
-  pinLBin.init(INPUT_OFFSET + 2);
-  pinLBout.init(INPUT_OFFSET + 8);
-  pinAHin.init(INPUT_OFFSET + 4);
-  pinAHout.init(INPUT_OFFSET + 6);
+  pinLBin.init(INPUT_OFFSET + 2, 50L);
+  pinLBout.init(INPUT_OFFSET + 8, 50L);
+  pinAHin.init(INPUT_OFFSET + 4, 50L);
+  pinAHout.init(INPUT_OFFSET + 6, 50L);
 
   // Ausgänge für die 8 Relais
   for (int i = 1; i <= OUTPUT_COUNT; i++) {
