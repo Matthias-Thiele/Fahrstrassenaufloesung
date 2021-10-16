@@ -1,6 +1,6 @@
 # Prerequisites
 *.d
-*.pio
+.pio
 
 # Compiled Object files
 *.slo
@@ -31,3 +31,5 @@
 *.exe
 *.out
 *.app
+.pio/build/project.checksum
+.pio/build/megaatmega2560/.sconsign38.dblite

@@ -17,6 +17,8 @@
 
 unsigned long nextTick = 0;
 unsigned long watchdocGBCommand = 0;
+unsigned long delayedSetLB = UINT32_MAX;
+unsigned long delayedSetAH = UINT32_MAX;
 unsigned long delayedResetLB = UINT32_MAX;
 unsigned long delayedResetAH = UINT32_MAX;
 
@@ -87,10 +89,10 @@ void stateSetup() {
   pinMode(A0, INPUT);
 
   // Eingänge für die vier Trigger
-  pinLBin.init(INPUT_OFFSET + 2, 50L);
-  pinLBout.init(INPUT_OFFSET + 8, 50L);
-  pinAHin.init(INPUT_OFFSET + 4, 50L);
-  pinAHout.init(INPUT_OFFSET + 6, 50L);
+  pinLBin.init(INPUT_OFFSET + 2, 50);
+  pinLBout.init(INPUT_OFFSET + 8, 50);
+  pinAHin.init(INPUT_OFFSET + 4, 50);
+  pinAHout.init(INPUT_OFFSET + 6, 50);
 
   // Ausgänge für die 8 Relais
   for (int i = 1; i <= OUTPUT_COUNT; i++) {
@@ -281,15 +283,15 @@ void processGmMwt(uint8_t cmd) {
       
     case 4: // Mitwirktaste Liebenzell
       if (onOff) {
-        setRelaisOutput(MWT_LB, true);
-        delayedResetLB = millis() + 2000;
+        delayedSetLB = millis() + 5000;
+        delayedResetLB = millis() + 7000;
       }
       break;
       
     case 5: // Mitwirktaste Althengstett
       if (onOff) {
-        setRelaisOutput(MWT_AH, true);
-        delayedResetAH = millis() + 2000;
+        delayedSetAH = millis() + 5000;
+        delayedResetAH = millis() + 7000;
       }
       break;
   }
@@ -335,10 +337,22 @@ void processCommand(unsigned long now) {
  * Zeitgesteuerte asynchrone Aktionen prüfuen und ausführen
  **/
 void processAsync(unsigned long now) {
+  if (delayedSetLB < now) {
+    // Mitwirktaste LB setzen
+    setRelaisOutput(MWT_LB, true);
+    delayedSetLB = UINT32_MAX;
+  }
+
   if (delayedResetLB < now) {
     // Mitwirktaste LB lösen
     setRelaisOutput(MWT_LB, false);
     delayedResetLB = UINT32_MAX;
+  }
+
+  if (delayedSetAH < now) {
+    // Mitwirktaste AH setzen
+    setRelaisOutput(MWT_AH, true);
+    delayedSetAH = UINT32_MAX;
   }
 
   if (delayedResetAH < now) {

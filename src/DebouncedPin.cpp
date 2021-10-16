@@ -2,7 +2,7 @@
 #include "DebouncedPin.hpp"
 
 #define SHIFT_OUT_BIT 0x200
-#define ONE_THRESHOLD 7
+#define ONE_THRESHOLD 5
 #define ZERO_THRESHOLD 3
 #define SHIFT_COUNT 10
 
@@ -44,16 +44,17 @@ void DebouncedPin::update() {
   }
 
   m_history = (m_history << 1) | (actValue & 1);
-
+  //Serial.print("DPin updat history: "); Serial.print(m_history, HEX); Serial.print(", count: "); Serial.print(m_count); Serial.print(", actValue: "); Serial.print(actValue); Serial.print(", last: "), Serial.print(m_lastState);
   if (m_lastState) {
-    if (actValue < ZERO_THRESHOLD) {
+    if (m_count < ZERO_THRESHOLD) {
       m_lastState = false;
     }
   } else {
-    if (actValue > ONE_THRESHOLD) {
+    if (m_count > ONE_THRESHOLD) {
       m_lastState = true;
     }
   }
+  //Serial.print(", last processed: "); Serial.println(m_lastState);
 }
 
 /**
